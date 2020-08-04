@@ -19,32 +19,29 @@ export default {
       required: true,
     },
   },
-  data: function () {
-    return {
-      thread: {},
-    };
-  },
   computed: {
+    thread() {
+      return this.$store.state.threads[this.threadId];
+    },
     posts() {
-      return sourceData.posts.filter(p => p.threadId === this.threadId);
+      return Object.values(this.$store.state.posts).filter(p => p.threadId === this.threadId);
     },
   },
   methods: {
     addPost(post) {
-      sourceData.posts[post.id] = { 
-        ...post,
-        threadId: this.threadId,
-        userId: 'ALXhxjwgY9PinwNGHpfai6OWyDu2',
-      };
-      this.$set(this.thread.posts, post.id, post.id);
+      this.$store.dispatch(
+        'createPost', 
+        { 
+          ...post,
+          threadId: this.threadId,
+          userId: 'ALXhxjwgY9PinwNGHpfai6OWyDu2'
+        }
+      );
     },
   },
   components: {
     PostsList,
     PostEditor,
-  },
-  created() {
-    this.thread = sourceData.threads[this.threadId];
   },
 }
 </script>

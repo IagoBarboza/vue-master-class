@@ -9,15 +9,14 @@
 </template>
 
 <script>
-import sourceData from '@/data';
 import CategoriesListItem from './components/CategoriesListItem';
 
 export default {
   name: 'CategoriesList',
-  data: function() {
-    return {
-      categories: sourceData.categories,
-    };
+  computed: {
+    categories() {
+      return this.$store.state.categories;
+    },
   },
   components: {
     CategoriesListItem,

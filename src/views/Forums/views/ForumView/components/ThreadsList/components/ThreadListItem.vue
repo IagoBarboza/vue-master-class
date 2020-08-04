@@ -36,7 +36,7 @@ export default {
     },
   },
   created() {
-    this.user = sourceData.users[this.thread.userId];
+    this.user = this.$store.state.users[this.thread.userId];
   }
 }
 </script>

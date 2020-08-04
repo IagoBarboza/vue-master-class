@@ -761,8 +761,87 @@
 
     - Move the used classes from "global.css" to its scoped style
 
+# VUEX
+
+  * State Management plugin for Vue Apps 
+
+  * Install vuex => "$ npm i vuex --save"
+
+  * Create the "@/store/index.js"
+
+    import Vue from 'vue';
+    import Vuex from 'vuex';
+    import sourceData from '@/data';
+
+    Vue.use(Vuex); // Adds the $store on the vue prototype
+
+    export default new Vuex.Store({
+      state: sourceData
+    });
+
+  * Add the configured store in the App (root) component on "@/main.js"
+
+  * Verify the app state in the DevTools/Vuex
+
+  * Use the app state in the "@/views/Categories/views/CategoriesList"
     
+    - Remove the sourceData importation
+      
+    - Update the "categories" data
+      categories: this.$store.state.categories
+    
+    - Transform the "categories" data in the "categories" computed property
+    
+  * Replace all "sourceData.*" by "this.$store.state.*"
 
+# CREATING NEW POSTS USING VUEX STATE
 
+  * State changes need to be made by mutations
 
+  * Mutations should be called by actions
 
+  * Create the "createPost" action in the "@/store/index.js"
+    
+    createPost (context, post) {
+      const postId = 'greatPost' + Math.random();
+      context.commit('setPost', { postId, post });
+      context.commit('appendPostToThread', { threadId: post.threadId, postId });
+      context.commit('appendPostToUser', { userId: post.userId, postId });
+    }
+
+  * Create the Mutations
+
+    mutations: {
+      setPost(state, { postId, post }) {
+        Vue.set(state.posts, postId, post);
+      },
+      appendPostToThread(state, { threadId, postId }) {
+        Vue.set(state.threads[threadId].posts, postId, postId);
+      },
+      appendPostToUser(state, { userId, postId }) {
+        Vue.set(state.users[userId].posts, postId, postId );
+      },`
+    }
+  
+  * Update the "@/components/PostEditor"
+    onSubmit() {
+      this.$emit('submit', {
+        text: this.text,
+        publishedAt: Math.floor(Date.now() / 1000),
+      });
+      this.text = '';
+    },
+  
+  * Update the "@/views/Threads/views/ThreadView"
+    addPost(post) {
+      this.$store.dispatch(
+        'createPost', 
+        { 
+          ...post,
+          threadId: this.threadId,
+          userId: 'ALXhxjwgY9PinwNGHpfai6OWyDu2'
+        }
+      );
+    },
+
+# NAVBAR

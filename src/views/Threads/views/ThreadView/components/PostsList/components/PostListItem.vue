@@ -38,18 +38,13 @@
         required: false,
       },
     },
-    data: function () {
-      return {
-        user: null,
-      };
-    },
     computed: {
-      userPostsCount() {
-        return Object.keys(this.postUser.posts).length;
+      user() {
+        return this.$store.state.users[this.post.userId];
       },
-    },
-    created() {
-      this.user = sourceData.users[this.post.userId];
+      userPostsCount() {
+        return Object.keys(this.user.posts).length;
+      },
     },
   }; 
 </script>

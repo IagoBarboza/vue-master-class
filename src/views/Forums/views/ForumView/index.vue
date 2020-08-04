@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import sourceData from '@/data.json';
 import ThreadsList from './components/ThreadsList';
 
 export default {
@@ -41,7 +40,7 @@ export default {
   },
   computed: {
     threads() {
-      return Object.entries(sourceData.threads)
+      return Object.entries(this.$store.state.threads)
         .filter(([threadKey, thread]) => thread.forumId === this.forumId)
         .map(([threadKey, thread]) => ({ id: threadKey, ...thread }))
     },
@@ -50,7 +49,7 @@ export default {
     ThreadsList,
   },
   created() {
-    this.forum = sourceData.forums[this.forumId];
+    this.forum = this.$store.state.forums[this.forumId];
   },
 }
 </script>

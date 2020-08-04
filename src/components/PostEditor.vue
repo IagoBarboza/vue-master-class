@@ -27,13 +27,11 @@ export default {
   },
   methods: {
     onSubmit() {
-      const post = {
-        id: 'greatPost' + Math.random(),
-        text: this.newPostText,
+      this.$emit('submit', {
+        text: this.text,
         publishedAt: Math.floor(Date.now() / 1000),
-      };
-      this.$emit('submit', post);
-      this.newPostText = '';
+      });
+      this.text = '';
     },
   },
 };

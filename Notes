@@ -845,3 +845,6 @@
     },
 
 # NAVBAR
+
+  * Create the "@/App/components/AppNavbar"
+    

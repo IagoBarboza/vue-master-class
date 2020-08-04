@@ -1,5 +1,18 @@
 <template>
   <div id="app">
-    <router-view />
+    <AppNavbar />
+    <div class="container">
+      <router-view />  
+    </div>
   </div>
 </template>
+
+<script>
+import AppNavbar from '@/components/AppNavbar';
+
+export default {
+  components: {
+    AppNavbar
+  }
+}
+</script>

@@ -2,7 +2,7 @@
   <div class="thread">
     <div>
       <p>
-        <router-link :to="{name: 'ThreadView', params: { threadId: thread.key } }">{{ thread.title }}</router-link>
+        <router-link :to="{name: 'ThreadView', params: { threadId: thread.id } }">{{ thread.title }}</router-link>
       </p>
       <p class="text-faded text-xsmall"> By, <a href="#">{{ user.name }}</a>, <AppDate :timestamp="thread.publishedAt" /> </p>
     </div>

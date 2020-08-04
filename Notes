@@ -1,0 +1,768 @@
+# STYLE GUIDE RULES USED
+  - Structural components
+  - View Components
+  - Component Line Limit
+  - Rest Routes
+
+# TOOLS
+  * VsCode
+  * Terminal (git bash)
+  * Vue Devtools
+  * Vue CLI => "$npm i -g @vue/cli"
+
+# SCAFFOLDING
+  * A boilerplate saves a lot of time
+  * Use the Vue CLI to create a new project => "$ vue create {project-name}"
+  * Run the project => "$ npm run serve"
+  * Project structure
+    - "/public/index.html" => Contains the dom element in which the main component will be rendered
+    - "/node_modules" => Dependencies used by the app
+    - "package.json" 
+      => Project information
+      => Scripts (ex: serve)
+      => Used libraries (node modules)
+    - "/src" => Contains the application's code
+    - "/src/components" => Shared components
+    - "/src/router" => Router stuff
+    - "/src/views" => View components (Created and Mounted by the router)
+    - "/src/App.vue" => Main component
+    - "/src/main.js" => Application entry file
+    - "/src/assets" => Assets processed by Webpack (Ex: The "logo.png" is converted to base64 after app build)
+    
+# AUTOMATIC CODE REVIEW
+  * A Linter is a software that reviews the application and reports suspicious code
+  * Reduces bugs
+  * Increases code quality
+  * Increases code consistency
+  * Used linter: ESLint
+  * eslint.org/demo => Contains a lint config file generator (A set of rules)
+  * An exitent preset of rules can be used on your project
+  * A popular preset is good because a lot of devs are using / contributing to improve it (Source of knownledge)
+  * Companies presets
+    => Airbnb (@vue/airbnb)
+    => ...
+  * Airbnb and Standard presets comparison 
+  * Verify the ESLint configuration on the package.json
+    => Local rules overrides the preset's rules
+      => Disable a rule: 'no-unused-vars': 0
+      => Rule as warning: 'no-unused-vars': 1
+      => Rule as error: 'no-unused-vars': 2
+
+# APPLICATION DATA
+  * Add the "src/data.json" from "http://github.com/vueschool/vue-master-class"
+  * "src/data.json" follows a firebase/realtime-database well structured data tree
+  * Clear the application
+    - Remove HelloWorld.vue
+    - Remove the view components
+    - Clear the router
+    - Clear the App.vue component
+  * Show the data (threads, posts and users) in the App.vue
+    - Import the data.json 
+    - Create the "threads", "posts" and "users" data attributes using the same attributes on data.json
+    - Build the template
+        <h1> Welcome to the Forum </h1>
+        <div v-for="thread in threads">
+          <h2>{{ thread.title }}</h2> ** Interpolation with mustaches syntax **
+          <div v-for="postId in thread.posts">
+            <p>users[posts[postId].userId].name</p>
+            <p>posts[postId].text</p>
+          </div>
+        </div>
+
+# STYLING
+  * Css, Less, Sass, ...
+  * Create the "@/assets/global.css" from "http://github.com/vueschool/vue-master-class"
+  * Import the "@/assets/global.css" at the "main.js" file
+  * Create the "@/components/Threads.vue"
+    - Import the "data.json"
+    - Create the "threads", "posts" and "users" data attributes from "data.json" data
+    - Build the template
+      <div>
+        <div v-for="thread in threads" class="col-large push-top">
+          <h2>{{ thread.title }}</h2>
+          <div class="post-list">
+            <div v-for="postId in thread.posts" class="post">
+              <div class="user-info">
+                <a href="#" class="user-name">{{ users[posts[postId].userId].name }}</a>
+                <a href="#">
+                  <img class="avatar-large" :src="users[posts[postId].userId].avatar">
+                </a>
+                <p class="desktop-only text-small">{{ Object.keys(users[posts[postId].userId].posts).length }} posts</p>
+              </div>
+              <div class="post-content">
+                <div>
+                  {{ posts[postId].text }}
+                </div>
+              </div>
+              <div class="post-date text-faded">
+                {{ posts[postId].publishedAt }}
+              <div>
+            </div>
+        </div>
+      </div>
+  * Use the "@/components/Threads.vue" on the "App.vue"'s template (Cleaning the previous template)
+  * Scoped Style
+    - Global styles => Always processed (preformance --)
+    - Scoped Styles => Processed only when their components are processed (performance ++)
+    - Use the scoped styles in the "@/components/Threads.vue"
+      - Add the <style scoped>
+      - Move all classes used in the template from "@/assets/global.css" to <style scoped>
+    - VueLoader is the responsable for load the scoped styles and apply the styles on the elements
+
+# ROUTING
+
+  * VueRouter => Official plugin that maps "routes" to "components"
+  * Achievement
+    * "localhost:8080/threads" => ThreadsList
+    * "localhost:8080/threads/{id}" => ThreadView
+  * Create the route "Threads" and its children
+    - "Threads"
+      - path: "threads",
+      - component: () => import('@/views/Threads')
+        - "ThreadView"
+          - path: ":threadId"
+          - component: () => import('@/views/Threads/views/ThreadView')
+  * Create the "@/views/Threads"
+    - Template
+      <router-view>
+  * Create the "@/views/Threads/views/ThreadView"
+    - Import the "data.json"
+    - Create the "thread", "threads", "posts" and "users" data attributes
+    - Copy the "@/components/Threads.vue"'s template
+    - Copy the "@/components/Threads.vue"'s style
+    - Delete the "@/components/Threads.vue" component
+    - Clear the App.vue and add a <router-view> on its template
+    - Loading the "thread" object 
+      => Approach 1: "this.thread = this.threads[this.$route.params.threadId]"
+      => Approach 2:
+        - Add the atribute "props: true" on the "ThreadView" route
+        - Create the "threadId" property
+        - Add "this.thread = this.threads[this.threadId]"
+  * Create the "@/views/Threads/views/ThreadsList"
+    - Import the "data.json"
+    - Create the "threads" and "users" and load their values from "data.json"
+    - Template
+      <div class="thread-list">
+        <h2 class="list-title">Threads</h2>
+        <div class="thread" v-for="(thread, index, key) in threads">
+          <div>
+            <p>
+              <a href="`/threads/${key}`">{{ thread.title }} </a>
+            </p>
+            <p class="text-faded text-xsmall"> By, <a href="#">{{ users[thread.userId].name }}</a>, {{ thread.publishedAt }} </p>
+          </div>
+          <div class="activity">
+            <p class="replies-count">
+              {{ Object.keys(thread.posts).length - 1 }} replies
+            </p>
+          </div>
+        </div>      
+      </div>
+    - Move the ".thread-list *" classes from the "global.css" to its scoped style 
+  * Create the route "ThreadsList" as a child of the "Threads" route
+    - name: "ThreadsList"
+    - path: ""
+    - component: () => import('@/views/Threads/views/ThreadsList')
+
+# SUBCOMPONENTS, PROPS AND COMPUTED PROPS
+
+  * Parent components are composed by subcomponents
+  * Parent components passes data to subcomponents using props
+  * Computed props
+    => Data transformation
+    => Data calculations
+  
+  * Split the "@/views/Threads/views/ThreadView" in subcomponents
+    
+    => Change the "@/views/Threads/views/ThreadView"
+      - Template
+        <div class="col-large push-top">
+          <h1>{{ thread.title }}</h1>
+          <PostsList :posts="posts" />
+        </div>
+      - Create the computed property "posts"
+        posts() {
+          return Object.values(sourceData.posts).filter(p => p.threadId === this.threadId);
+        }
+      - Import the sourceData
+      - Import and declare the "@/views/Threads/views/ThreadView/components/PostsList" 
+    
+    => Create the "@/views/Threads/views/ThreadView/components/PostsList"
+      - Template
+        <div class="post-list">
+          <PostListItem v-for="(post, index) in posts" :post="post" :key="index" />
+        </div>
+      - Create the "posts" property
+      - Import and declare the "@/views/Threads/views/ThreadView/components/PostsList/components/PostListItem"
+      - Move the classes used on its template from the "@/views/Threads/views/ThreadView"'s scoped style to its scoped style 
+
+    => Create the "@/views/Threads/views/ThreadView/components/PostsList/components/PostListItem"
+      - Template
+        <div class="post">
+          <div class="user-info">
+            <a href="#" class="user-name">{{ post.user.name }}</a>
+            <a href="#">
+              <img class="avatar-large" :src="post.user.avatar">
+            </a>
+            <p class="desktop-only text-small">
+              {{ userPostsCount }} posts
+            </p>
+          </div>
+          <div class="post-content">
+            <div>
+              <p>
+                {{ post.text }}
+              </p>
+            </div>
+          </div>
+          <div class="post-date text-faded">
+            {{ post.publishedAt }}
+          </div>
+        </div>
+      - Import the sourceData
+      - Create the "post" property
+      - Create the "user" data
+      - Create the the "userPostsCount" computed property 
+        usersPostsCount() {
+          return Object.values(this.user.posts).lengt;
+        }
+      - Load the "user" data in the created() hook
+        this.user = sourceData.users[this.post.userId];
+      - Move the classes used on its template from "@/views/Threads/views/ThreadView"'s scoped style to its scoped style
+
+  * Split the "@/views/Threads/views/ThreadsList" in subcomponents
+
+    => Change the "ThreadsList" component
+      - Template
+        <div class="thread-list">
+          <h2 class="list-title">Threads</h2>
+          <ThreadListItem v-for="(thread, key) in threads" :key="key" :thread="{ id: key, ...thread }" />
+        </div>
+      - Import and declare the "@/views/Threads/views/ThreadsList/components/ThreadListItem"
+      - Import the sourceData
+      - Create the "threads" data
+      - Load the "threads" data on the "created" hook
+        this.threads = sourceData.threads;
+  
+    => Create the "@/views/Threads/TreadsList/components/ThreadListItem"
+      - Template
+        <div class="thread">
+          <div>
+            <p>
+              <a :href="`/threads/${thread.key}`">{{ thread.title }} </a>
+            </p>
+            <p class="text-faded text-xsmall"> By, <a href="#">{{ user.name }}</a>, {{ thread.publishedAt }} </p>
+          </div>
+          <div class="activity">
+            <p class="replies-count">
+              {{ repliesCount }} replies
+            </p>
+          </div>
+        </div>
+      - Import the sourceData
+      - Create the "thread" prop
+      - Create the "repliesCount" computed prop
+        repliesCount() {
+          return Object.values(this.thread.posts).length - 1
+        }
+      - Create the "user" data
+      - Load the "user" data in the "created" hook
+        this.user = sourceData.users[this.thread.userId]
+      - Move the classes used on its template from the "@/views/Threads/views/ThreadsList" scoped style to its scoped style
+
+# ROUTER LINKS
+
+  * <router-link :to="`/route/${id}`">
+  * <router-link :to="{name: 'route', params: { id: id}}"> (Use this approach, because if the path changes, the link still works)
+
+  * Replace all <a>'s by <router-link>'s 
+
+# HANDLING NOT FOUND PAGES
+  
+  * Create the "@/views/PageNotFound.vue" component
+    - Template
+      <div class="col-full">
+        <h1 class="large-text">Not Found</h1>
+        <p>Ooops, we couldn't find what you are looking for. Why don't you
+          <router-link :to="{name: 'ThreadsList'}"> go to threads list instead? </router-link>
+        </p>
+      </div>
+    - Style
+      .large-text {
+        font-size: 100px;
+      }
+      p {
+        font-size: 50px;
+        font-weight: 100;
+      }
+      div {
+        text-align: center;
+      }
+  * Add the "*" (non-defined) route in the router mapped to the PageNotFound component
+   
+# ARROW FUNCTIONS
+  * Way to define functions
+  * Shorter syntax
+  * ES2015
+  * "this"
+    - In regular functions => "this" = Object that called the function
+    - In arrow functions => "this" = Object that defined the arrow function
+  * Examples => https://www.w3schools.com/js/js_arrow_function.asp
+
+# TWO WAY DATA BINDING
+
+  * v-model => Directive that creates a two way binding between the component data and the template input value
+  
+  * Update the "@/views/Threads/views/ThreadView"
+    - Template
+      ...
+      <form @submit.prevent="addPost">
+        <div class="form-group">
+          <textarea
+            name="" 
+            id="" 
+            cols="30" 
+            rows="10"
+            class="form-input"
+            v-model="newPostText"
+          >
+          </textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-blue">Submit post</button>
+        </div>
+      </form>
+
+    - Create the "newPostText" data attribute 
+    
+    - Verify the data attribute is being changed on the Vue DevTools when the text area receives new characters
+    - Verify the value of the text area changes when the data attribute is changed in the Vue DevTools
+    - Verify the value of the text area changes when the data attribute is changed in console using $vmX.newPostText = "something"
+    
+    - Create the "addPost" method
+      const post = {
+        text: this.newPostText,
+        publishedAt: Math.floor(Date.now() / 1000),
+        threadId: this.threadId,
+        userId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2',
+      };
+      const postId = 'greatPost' + Math.random()
+      sourceData.posts[postId] = post;
+      this.thread.posts[postId] = postId;
+    
+    - Verify nothing is happening
+
+    - Vue's reactivity system (https://br.vuejs.org/v2/guide/reactivity.html)
+      => Vue cannot detect property addition or removal, once the convertion to getter/setter ocurrs during the instance initialization
+      => Properties need to be present in the "data" to Vue make them reactive
+      => You need to use Vue.set() to create reactive properties after Vue instance initialization
+      => Update the "addPost()"
+        // this.thread.posts[postId] = postId;
+        this.$set(this.thread.posts, postId, postId); (this.$set = Vue.set)
+
+    - Clear the value of the text-area after add the new post
+
+    - Add the postId in the user that created the post using the Vue.set()
+
+# CUSTOM EVENTS
+
+  * When can have a lighter "@/views/Threads/views/ThreadView" by extracting the code related to the post creation to the "PostEditor" subcomponent
+
+  * The "PostEditor" can be a reusable component (We can use it for editing posts in the future)
+
+  * Create the "@/components/PostEditor" to be a reusable "shared" component
+    - Template
+      <form @submit.prevent="onSubmit">
+        <div class="form-group">
+          <textarea
+            name="" 
+            id="" 
+            cols="30" 
+            rows="10"
+            class="form-input"
+            v-model="text"
+          >
+          </textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-blue">Submit post</button>
+        </div>
+      </form>
+
+    - Create the "text" data attr
+
+    - Create the onSubmit() method
+        const post = {
+          id: 'greatPost' + Math.random(),
+          text: this.text,
+          publishedAt: Math.floor(Date.now() / 1000),
+        };
+        this.$emit('submit', post);
+        this.newPostText = '';
+  
+  * Event Emitter => this.$emit('event-name', eventPayloadObject)
+  
+  * Verify the event is being emitted on the VueDevTools/Events
+
+  * Update the "@/views/Threads/views/ThreadView"
+    - Import and declare the "@/components/PostEditor"
+
+    - Delete the "newPostText" data attr
+
+    - Template
+      <div class="col-large push-top">
+        <h1>{{ thread.title }}</h1>
+        <PostsList :posts="threadPosts" />
+        <PostEditor @submit="addPost" />
+      </div>
+    
+    - addPost(post) 
+      sourceData.posts[post.id] = { 
+        ...post,
+        threadId: this.threadId,
+        userId: 'ALXhxjwgY9PinwNGHpfai6OWyDu2',
+      };
+      this.$set(this.thread.posts, post.id, post.id);
+
+  * Subcomponent event listener => @{event-name} / v-on:{event-name}
+
+# DESTRUCTURING ARRAYS AND OBJECTS
+
+  * ES6 expressions
+  
+  * Array elements to variables
+
+    - Variables declaration
+      const villains = ['Demogorgon', 'Mojo Jojo', 'Sauron', 'He-who-must-not-be-named']
+      let [one, two, three, four] = villains
+      // one => Demogorgon
+      // two => Mojo Jojo// ...
+
+    - Switching variables values wihout an aux variable
+      [two, one] = [one, two]
+
+  * Objects properties to variables
+
+    - Variables declaration
+      const person = {
+        firstName: 'Alex',
+        lastName: 'Kyriakidis',
+        food: 'burguers',
+      };
+      let { firstName, la  stName, food } = person;
+      // firstName => 'Alex'
+      // ...
+    
+    - Variables attribution
+      ({ food, firstName, lastName } = person);
+
+    - Changing the name of the variables
+      let { firstName: fn } = person;
+
+    - Default value for a unexistent property
+      let { firstname, pet = 'turtle' } = person;
+
+  * Usefull with functions
+
+    let greet = person => {
+      console.log(`
+        Hi there, ${person.firstName}
+        Here is some ${person.food} for your ${person.pet}.
+      `)
+    }
+
+    let greet = { firstName, food, pet = 'turtle' } => {
+      console.log(`
+        Hi there, ${firstName}
+        Here is some ${food} for your ${pet}.
+      `)
+    }
+
+# FILTERS
+
+  * Install moment => "$ npm i moment --save"
+
+  * Update the "@/views/Threads/views/ThreadView/components/PostsList/components/PostListItem"
+    - import moment from 'moment'
+    
+    - Using a computed property
+
+      => Use if you have only one date property to be transformed
+      
+      => Create the computed property "humanFriendlyDate"
+        return moment.unix(this.post.publishedAt).format('MMMM Do YYYY', h:mm:ss a')
+
+      => Use the computed property in the template
+    
+    - Using a filter
+
+      => Use if you have multiple date properties to be transformed to the same format
+
+      => A filter is a method with an special syntax
+
+      => A filter is more flexible than a computed property because it can receive params
+    
+      => Filters can be chained
+
+      => Create the filter "humanFirendlyDate" receiving the "date" param
+        humanFriendlyDate(date) {
+          return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a');
+        }
+      
+      => Use the filter in the template
+
+# BASE (SHARED) COMPONENTS
+
+  * In the "@/views/Threads/ThreadsList/ThreadListItem" we need to format the date too
+
+  * Instead to duplicate the code of the filter, we will create the "AppDate" to be used on every component that need a date formatting 
+
+  * Create the "@/components/AppDate"
+
+    - Template
+      <span :title=" timestamp| humanFriendlyDate">
+        {{ timestamp | diffForHumans }}
+      </span >
+    
+    - Import moment
+
+    - Create the "timestamp" prop
+
+    - Create the filter "humanFirendlyDate"
+      return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a');
+
+    - Create the filter "diffFormHumans"
+      return moment.unix(date).fromNow();
+
+  * Update the "@/views/Threads/views/ThreadView/PostsList/components/PostListItem"
+    
+    - Template
+      ...
+      <div class="post-date text-faded">
+        <AppDate :timestamp="post.publishedAt" />
+      </div>
+    
+    - Remove the moment import
+
+    - Remove the filter humanFriendlyDate
+
+    - Import and declare the "@/components/AppDate"
+  
+  * Update the "@/views/Threads/views/ThreadsList/components/ThreadListItem"
+
+    - Template
+      ...
+      <p class="text-faded text-xsmall"> By, <a href="#">{{ thread.user.name }}</a>, <AppDate :timestamp="thread.publishedAt" /> </p>
+    
+    - Import and declare the "@/components/AppDate"
+
+# GLOBAL BASE (SHARED) COMPONENTS
+
+  * It makes sense to register base (shared) components globally to avoid multiple imports and declarations
+
+  * Register a component globally => Vue.component(tagName, options)
+
+  * Use the main.js file to register components globally
+    - Always included
+    - Holds logic that affects the whole application
+    - Root file that import everything else (Ex: Router and App.vue)
+
+  * Register the "@/components/AppDate" globally in the main.js
+
+  * Remove the "@/components/AppDate" importation and declaration 
+    - In the "@/views/Threads/views/ThreadsList/components/ThreadListItem"
+    - In The "@/views/Threads/views/ThreadView/components/PostsList/components/PostListItem"
+
+# ORGANIZE THREADS IN FORUMS
+
+  * Forum 
+    - Collection of threads
+    - Can include other forums
+
+  * Create the "Forums" route and its children
+    {
+      path: '/forums',
+      component: () => import('@/views/Forums'),
+      children: [
+        {
+          path: ':forumId',
+          name: 'ForumView',
+          component: () => import('@/views/Forums/views/ForumView'),
+          props: true,
+        }
+      ]
+    }
+  
+  * Create the "@/views/Forums"
+    - Template
+      <router-view/>
+    - Create the "name" attribute
+
+  * Create the "@/views/Forums/views/ForumView"
+    - Template
+      <div>
+        <div class="col-full push-top">
+          <div class="forum-header">
+            <div class="forum-details">
+              <h1>{{ forum.name }}</h1>
+              <p class="text-lead">{{ forum.description }}</p>
+            </div>
+            <router-link  
+              :to="{ name: 'ThreadCreate', params: { forumId: this.forumId } }"
+              class="btn-green btn-small"
+            >
+              Start a thread
+            </router-link>
+          </div>
+        </div>
+
+        <div class="col-full push-top">
+          <ThreadsList :threads="threads" />
+        </div>
+      </div>
+
+    - Import the sourceData
+
+    - Import and import the "@/views/Forums/views/ForumView/components/ThreadsList"
+
+    - Create the "forumId" property
+
+    - Create the "forum" data
+
+    - Load the "forum" data on the "created" hook
+      this.forum = sourceData.forums[this.forumId]
+
+    - Create the "threads" computed property
+      threads() {
+        return Object.entries(sourceData.threads)
+          .filter(([threadKey, thread]) => thread.forumId === this.forumId)
+          .map(([threadKey, thread]) => ({ id: threadKey, ...thread }))
+      }
+
+    - Move the used classes from "global.css" to its scoped style
+
+  * Update the "ThreadsList"
+
+    - Move to "@/views/Forums/views/ForumView/components"
+
+    - Remove its route
+
+    - Create the threads prop
+
+# ORGANIZE FORUMS IN CATEGORIES 
+
+  * Create the "Categories" route and its children
+    {
+      path: '/categories',
+      component: () => import('@/views/Categories')
+      children: [
+        {
+          path: '',
+          name: 'CategoriesList',
+          component: () => import('@/views/Categories/views/CategoriesList')
+        }
+      ]
+    }
+
+  * Create the "@/views/Categories"
+   
+    - Template
+      <router-view />
+    - Add the name attribute
+  
+  * Create the "@/views/Categories/views/CategoriesList"
+    
+    - Template
+      <div>
+        <CategoriesListItem
+          v-for="(category, key) in categories"
+          :category="{ id: key, ...category }"
+          :key="key"
+        />
+      </div>
+
+    - Import the sourceData
+
+    - Create the "categories" data and load its value from sourceData.categories
+
+    - Import and declare the "./components/CategoriesListItem"
+
+  * Create the "@/views/Categories/views/CategoriesList/components/CategoriesListItem"
+
+    - Template
+      <div>
+        <h2 class="list-title">
+          <router-link :to="{ name: 'Category', params: { catetoryId: this.category.id }}">
+            {{ category.name }}
+          </router-link>
+        </h2>
+
+        <ForumsList :forums="forums" />
+      </div>
+    
+    - Import the sourceData
+
+    - Import and declare the "./components/ForumsList"
+
+    - Create the "category" prop
+
+    - Create the "forums" computed property
+      forums() {
+        return Object.entries(sourceData.forums)
+          .filter(([forumKey, forum]) => forum.categoryId === this.category.id)
+          .map(([forumKey, forum]) => ({ id: forumKey, ...forum }));
+      },
+
+  * Create the "@/views/Categories/views/CategoriesList/components/CategoriesListItem/components/ForumsList"
+
+    - Template
+      <div>
+        <div class="forum-list">
+          <ForumsListItem 
+            v-for="(forum, index) in forums"
+            :forum="forum"
+            :key="index"
+          />
+        </div>
+      </div>
+
+    - Import and declare the "./components/ForumsListItem"
+
+    - Create the "forums" prop
+
+    - Move the used classes from "global.css" to its scoped style
+
+  * Create the "@/views/Categories/views/CategoriesList/components/CategoriesListItem/components/ForumsList/components/ForumsListItem"
+
+    - Template
+      <div class="forum-listing">
+        <div class="forum-details">
+          <router-link 
+            class="text-xlarge"
+            :to=" {name: 'ForumView', params: { forumId: forum.id } }"
+          >
+            {{ forum.name }}
+          </router-link>
+
+          <p>{{ forum.description }}</p>
+        </div>
+
+        <div class="threads-count">
+          <p class="count">{{ threadsCount }}</p> threads
+        </div>
+      </div>
+
+    - Create the "forum" prop
+
+    - Create the "threadsCount" computed property
+      threadsCount() {
+        return Object.keys(this.forum.threads).length;
+      }
+
+    - Move the used classes from "global.css" to its scoped style
+
+    
+
+
+
+

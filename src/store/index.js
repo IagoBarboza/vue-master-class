@@ -5,7 +5,10 @@ import sourceData from '@/data';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: sourceData,
+  state: {
+    ...sourceData,
+    authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3',
+  },
   actions: {
     createPost(context, post) {
       const postId = 'greatPost' + Math.random();
@@ -24,5 +27,10 @@ export default new Vuex.Store({
     appendPostToUser(state, { userId, postId }) {
       Vue.set(state.users[userId].posts, postId, postId );
     },
-  }
+  },
+  getters: {
+    authUser(state) {
+      return state.users[state.authId]; 
+    },
+  },
 });

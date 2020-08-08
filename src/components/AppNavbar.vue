@@ -18,9 +18,9 @@
       <ul>
         <li class="navbar-user">
           <a href="#">
-            <img src="https://instagram.fmcz4-1.fna.fbcdn.net/v/t51.2885-15/e35/21984894_597277883995028_341322631561084928_n.jpg?_nc_ht=instagram.fmcz4-1.fna.fbcdn.net&_nc_cat=108&_nc_ohc=OCAQE09Bs3MAX_jLWqD&oh=f19198c8e01c8a11230f6e5423015c39&oe=5F528E75" class="avatar-small">
+            <img class="avatar-small" :src="user.avatar">
             <span>
-              Iago barboza
+              {{ user.name }}
               <img src="@/assets/img/arrow-profile.svg" class="icon-profile">
             </span>
           </a>
@@ -31,8 +31,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  name: 'AppNavbar'
+  name: 'AppNavbar',
+  computed: {
+    ...mapGetters({
+      'user': 'authUser',
+    }),
+  },
 }
 </script>
 

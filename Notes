@@ -886,4 +886,30 @@
         
 # GRABBING THE AUTHENTICATED USER
 
-  *
+  * Create the "authId" attribute on the store state
+    authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
+  
+  * Create the "authUser" getter in the store
+    authUser(state) {
+      return state.users[state.authId];
+    }
+
+  * Update the "@/components/AppNavbar"
+
+    - Template
+      ... 
+      <img class="avatar-small" :src="user.avatar">
+      <span>
+        {{ user.name }}
+        <img src="@/assets/img/arrow-profile.svg" class="icon-profile">
+      </span>
+      ...
+    
+    - Import the "mapGetters" function
+    
+    - Create the "user" computed property using the "mapGetters" function
+      ...mapGetters({
+        'user': 'authUser'
+      })
+    
+    

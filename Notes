@@ -56,9 +56,9 @@
     - Remove the view components
     - Clear the router
     - Clear the App.vue component
-  * Show the data (threads, posts and users) in the App.vue
+  * Show the data (threads, posts and users) in the "App.vue"
     - Import the data.json 
-    - Create the "threads", "posts" and "users" data attributes using the same attributes on data.json
+    - Create the "threads", "posts" and "users" data attributes using the same attributes of "data.json"
     - Build the template
         <h1> Welcome to the Forum </h1>
         <div v-for="thread in threads">
@@ -71,7 +71,7 @@
 
 # STYLING
   * Css, Less, Sass, ...
-  * Create the "@/assets/global.css" from "http://github.com/vueschool/vue-master-class"
+  * Create the "@/assets/global.css" based on "https://github.com/vueschool/vue-master-class/blob/master/src/assets/css/style.css"
   * Import the "@/assets/global.css" at the "main.js" file
   * Create the "@/components/Threads.vue"
     - Import the "data.json"
@@ -116,15 +116,22 @@
     * "localhost:8080/threads" => ThreadsList
     * "localhost:8080/threads/{id}" => ThreadView
   * Create the route "Threads" and its children
-    - "Threads"
-      - path: "threads",
-      - component: () => import('@/views/Threads')
-        - "ThreadView"
-          - path: ":threadId"
-          - component: () => import('@/views/Threads/views/ThreadView')
+      {
+        path: "threads",
+        component: () => import('@/views/Threads')
+        children: [
+          {
+            path: ':threadId',
+            name: 'ThreadView',
+            component: () => import('@/views/Threads/views/ThreadView')
+          }
+        ]
+      }
+      
   * Create the "@/views/Threads"
     - Template
       <router-view>
+
   * Create the "@/views/Threads/views/ThreadView"
     - Import the "data.json"
     - Create the "thread", "threads", "posts" and "users" data attributes
@@ -138,6 +145,7 @@
         - Add the atribute "props: true" on the "ThreadView" route
         - Create the "threadId" property
         - Add "this.thread = this.threads[this.threadId]"
+  
   * Create the "@/views/Threads/views/ThreadsList"
     - Import the "data.json"
     - Create the "threads" and "users" and load their values from "data.json"
@@ -159,15 +167,20 @@
         </div>      
       </div>
     - Move the ".thread-list *" classes from the "global.css" to its scoped style 
+
   * Create the route "ThreadsList" as a child of the "Threads" route
-    - name: "ThreadsList"
-    - path: ""
-    - component: () => import('@/views/Threads/views/ThreadsList')
+    {
+      path: "",
+      name: "ThreadsList",
+      component: () => import('@/views/Threads/views/ThreadsList')
+    }
 
 # SUBCOMPONENTS, PROPS AND COMPUTED PROPS
 
   * Parent components are composed by subcomponents
+
   * Parent components passes data to subcomponents using props
+
   * Computed props
     => Data transformation
     => Data calculations
@@ -221,13 +234,11 @@
         </div>
       - Import the sourceData
       - Create the "post" property
-      - Create the "user" data
+      - Create the "user" data => user: sourceData.users[this.post.userId],
       - Create the the "userPostsCount" computed property 
         usersPostsCount() {
           return Object.values(this.user.posts).lengt;
         }
-      - Load the "user" data in the created() hook
-        this.user = sourceData.users[this.post.userId];
       - Move the classes used on its template from "@/views/Threads/views/ThreadView"'s scoped style to its scoped style
 
   * Split the "@/views/Threads/views/ThreadsList" in subcomponents
@@ -240,9 +251,7 @@
         </div>
       - Import and declare the "@/views/Threads/views/ThreadsList/components/ThreadListItem"
       - Import the sourceData
-      - Create the "threads" data
-      - Load the "threads" data on the "created" hook
-        this.threads = sourceData.threads;
+      - Create the "threads" data => threads: sourceData.threads
   
     => Create the "@/views/Threads/TreadsList/components/ThreadListItem"
       - Template
@@ -265,9 +274,7 @@
         repliesCount() {
           return Object.values(this.thread.posts).length - 1
         }
-      - Create the "user" data
-      - Load the "user" data in the "created" hook
-        this.user = sourceData.users[this.thread.userId]
+      - Create the "user" data => user: sourceData.users[this.thread.userId]
       - Move the classes used on its template from the "@/views/Threads/views/ThreadsList" scoped style to its scoped style
 
 # ROUTER LINKS
@@ -400,7 +407,7 @@
         this.$emit('submit', post);
         this.newPostText = '';
   
-  * Event Emitter => this.$emit('event-name', eventPayloadObject)
+  * Event Emitter => this.$emit('event-name', PayloadObject)
   
   * Verify the event is being emitted on the VueDevTools/Events
 
@@ -627,10 +634,7 @@
 
     - Create the "forumId" property
 
-    - Create the "forum" data
-
-    - Load the "forum" data on the "created" hook
-      this.forum = sourceData.forums[this.forumId]
+    - Create the "forum" data => forum: sourceData.forums[this.forumId]
 
     - Create the "threads" computed property
       threads() {
@@ -641,7 +645,7 @@
 
     - Move the used classes from "global.css" to its scoped style
 
-  * Update the "ThreadsList"
+  * Update the "@/views/Threads/views/ThreadsList"
 
     - Move to "@/views/Forums/views/ForumView/components"
 
@@ -790,7 +794,7 @@
     - Update the "categories" data
       categories: this.$store.state.categories
     
-    - Transform the "categories" data in the "categories" computed property
+    - Transform the "categories" data in the "categories" computed property (best practices)
     
   * Replace all "sourceData.*" by "this.$store.state.*"
 
@@ -798,7 +802,7 @@
 
   * State changes need to be made by mutations
 
-  * Mutations should be called by actions
+  * Mutations should be called (committed) by actions
 
   * Create the "createPost" action in the "@/store/index.js"
     
@@ -846,5 +850,40 @@
 
 # NAVBAR
 
-  * Create the "@/App/components/AppNavbar"
+  * Create the "@/components/AppNavbar"
     
+    - Template
+
+      <header class="header" id="header">
+
+      <router-link
+        :to="{ name: 'CategoriesList' }"
+        class="logo"
+      >
+        <img src="@/assets/img/vueschool-logo.svg">
+      </router-link>
+
+      <div class="btn-hamburger">
+        <div class="top bar"></div>
+        <div class="middle bar"></div>
+        <div class="bottom bar"></div>
+      </div>
+
+      <nav class="navbar">
+        <ul>
+          <li class="navbar-user">
+            <a href="#">
+              <img src="https://instagram.fmcz4-1.fna.fbcdn.net/v/t51.2885-15/e35/21984894_597277883995028_341322631561084928_n.jpg?_nc_ht=instagram.fmcz4-1.fna.fbcdn.net&_nc_cat=108&_nc_ohc=OCAQE09Bs3MAX_jLWqD&oh=f19198c8e01c8a11230f6e5423015c39&oe=5F528E75" class="avatar-small">
+              <span>
+                Iago barboza
+                <img src="@/assets/img/arrow-profile.svg" class="icon-profile">
+              </span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+        
+# GRABBING THE AUTHENTICATED USER
+
+  *

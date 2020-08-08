@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="col-full push-top">
+    <h1>Welcome to the Forum</h1>
     <CategoriesListItem
       v-for="(category, key) in categories"
       :category="{ id: key, ...category }"

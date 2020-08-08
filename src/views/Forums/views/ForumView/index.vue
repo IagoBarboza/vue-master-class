@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="col-full push-top">
     <div class="col-full push-top">
       <div class="forum-header">
         <div class="forum-details">

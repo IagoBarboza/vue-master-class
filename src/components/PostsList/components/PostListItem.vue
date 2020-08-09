@@ -29,6 +29,7 @@
 
 <script>
   import sourceData from '@/data';
+  import { countObjectProperties } from '@/utils';
 
   export default {
     name: 'PostListItem',
@@ -43,7 +44,7 @@
         return this.$store.state.users[this.post.userId];
       },
       userPostsCount() {
-        return Object.keys(this.user.posts).length;
+        return countObjectProperties(this.user.posts);
       },
     },
   }; 

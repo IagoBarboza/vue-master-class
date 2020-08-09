@@ -66,6 +66,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import PostsList from '@/components/PostsList';
+import { countObjectProperties } from '@/utils';
 
 export default {
   name: 'AuthUserView',
@@ -74,10 +75,10 @@ export default {
       'user': 'authUser',
     }),
     userPostsCount() {
-      return Object.keys(this.user.posts).length;
+      return countObjectProperties(this.user.posts);
     },
     userThreadsCount() {
-      return this.user.threads ? Object.keys(this.user.threads).length : 0;
+      return countObjectProperties(this.user.threads);
     },
     userPosts() {
       if (this.user.posts) {

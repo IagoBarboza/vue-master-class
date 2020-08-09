@@ -922,4 +922,49 @@
       })
     
     - Move the used classes from "@/assets/global.css" to its scoped style
-    
+
+# UTILS
+
+  * Create the "@/utils/index.js"
+    const countObjectProperties = obj => {
+      if (typeof obj === 'object') {
+        return Object.keys(obj).length;
+      }
+      return 0;
+    }
+
+    export {
+      countObjectProperties,
+    }
+
+  * Update the "@/views/Categories/views/CategoriesList/components/CategoriesListItem/components/ForumsList/components/ForumsListItem"
+
+    - Import the "countObjectProperties"
+
+    - Use the "countObjectProperties" in the "threadsCount" computed property
+      threadsCount() {
+        return countObjectProperties(this.forum.threads);
+      }
+  
+  * Update the "@/components/PostsList/components/PostsListItem"
+
+    - Import the "countObjectProperties"
+
+    - Use the "countObjectProperties" in the "userPostsCount" computed property
+
+  * Update the "@/views/Threads/views/ThreadsList/components/ThreadsListItem"
+
+    - Import the "countObjectProperties"
+
+    - Use the "countObjectProperties" in the "repliesCount" computed property
+
+  * Update the "@/views/Users/views/AuthUserView"
+
+    - Import the "countObjectProperties"
+
+    - Use the "countObjectProperties" in the "userPostsCount" computed property
+
+    - Use the "countObjectProperties" in the "userThreadsCount" computed property
+
+  
+  

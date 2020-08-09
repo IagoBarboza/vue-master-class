@@ -16,6 +16,7 @@
 
 <script>
 import sourceData from '@/data';
+import { countObjectProperties } from '@/utils';
 
 export default {
   name: 'ThreadListItem',
@@ -32,7 +33,7 @@ export default {
   },
   computed: {
     repliesCount() {
-      return Object.keys(this.thread.posts).length - 1;
+      return countObjectProperties(this.thread.posts) - 1;
     },
   },
   created() {

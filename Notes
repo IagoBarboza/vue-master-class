@@ -883,6 +883,15 @@
         </ul>
       </nav>
     </header>
+
+  - Import the "mapGetters" helper
+
+  - Create the "user" computed property using the "mapGetters" helper
+    ...mapGetters({
+      'user': 'authUser',
+    }),
+
+  - Move the used classes from "@/assets/global.css" to its scoped style
         
 # GRABBING THE AUTHENTICATED USER
 
@@ -912,4 +921,5 @@
         'user': 'authUser'
       })
     
+    - Move the used classes from "@/assets/global.css" to its scoped style
     

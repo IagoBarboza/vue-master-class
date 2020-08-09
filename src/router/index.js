@@ -40,6 +40,17 @@ const routes = [
     ],
   },
   {
+    path: '/users',
+    component: () => import('@/views/Users'),
+    children: [
+      {
+        path: 'auth',
+        name: 'AuthUserView',
+        component: () => import('@/views/Users/views/AuthUserView'),
+      },
+    ],
+  },
+  {
     path: '*',
     component: () => import('@/views/PageNotFound'),   
   },

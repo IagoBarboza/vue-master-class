@@ -30,7 +30,10 @@ export default new Vuex.Store({
   },
   getters: {
     authUser(state) {
-      return state.users[state.authId]; 
+      return {
+        ...state.users[state.authId],
+        id: state.authId,
+      };
     },
   },
 });

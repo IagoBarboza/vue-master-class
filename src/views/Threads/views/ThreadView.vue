@@ -8,7 +8,7 @@
 
 <script>
 import sourceData from '@/data';
-import PostsList from './components/PostsList';
+import PostsList from '@/components/PostsList';
 import PostEditor from '@/components/PostEditor';
 
 export default {

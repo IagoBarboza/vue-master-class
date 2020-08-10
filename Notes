@@ -966,5 +966,36 @@
 
     - Use the "countObjectProperties" in the "userThreadsCount" computed property
 
+# PASS BY REFERENCE vs PASS BY VALUE
+
+  * Variable Types
+
+    - Primitives (Copied by value)
+      => String
+      => Number
+      => Boolean
+      => null
+      => undefined
+    
+    - Objects (Copied by reference)
+      => Object
+      => Array
+      => Function
   
-  
+  * Cloning Objects
+
+    - Spread operator (Dangerous)
+      
+      let pet = {
+        name: 'Ros',
+        animal: 'turtle'
+      }
+      let pet2 = { ...pet }
+
+      let fruits = ['banana', 'orange']
+      let fruits2 = [...fruits]
+
+    - JSON.parse(JSON.stringify(object)) (Safe)
+
+      p3 = JSON.parse(JSON.stringify(person))
+

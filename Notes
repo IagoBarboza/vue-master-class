@@ -999,3 +999,142 @@
 
       p3 = JSON.parse(JSON.stringify(person))
 
+# UPDATE THE AUTH USER
+
+  * Update the "@/views/Users/views/AuthUserView"
+
+    - Template
+
+      <div class="flex-grid">
+        <!-- <UserProfileCard
+          :user="user"
+          :userPostsCount="userPostsCount"
+          :userThreadsCount="userThreadsCount"
+        /> -->
+        <UserProfileCardEditor
+          :user="user"
+          :userPostsCount="userPostsCount"
+          :userThreadsCount="userThreadsCount"
+        />
+    
+    - Import and declare the "UserProfileCard" and the "UserProfileCardEditor" components
+  
+  * Create the "@/views/Users/views/AuthUserView/components/UserProfileCard"
+
+    - Template
+      <div>
+        <div class="profile-card">
+          
+          <p class="text-center">
+            <img :src="user.avatar" class="avatar-xlarge">
+          </p>
+          
+          <h1 class="title">{{ user.username }}</h1>
+          
+          <p class="text-lead">{{ user.name }}</p>
+          
+          <p class="text-justify">
+            <span v-if="user.bio">{{ user.bio }}</span>
+            <span v-else>No bio specified.</span>
+          </p>
+          
+          <span class="online">{{ user.username }} is online</span>
+          
+          <div class="stats">
+            <span>{{ userPostsCount }} posts</span>
+            <span>{{ userThreadsCount }} threads</span>
+          </div>
+
+          <hr>
+
+          <p v-if="user.website" class="text-large text-center">
+            <i class="fa fa-globe">
+              <a :href="user.website">{{ user.website }}</a>
+            </i>
+          </p>
+
+        </div>
+        
+        <p class="text-xsmall text-faded text-center">Member since june 2003, last visited 4 hours ago</p>
+
+        <div class="text-center">
+          <hr>
+          <a href="edit-profile.html" class="btn-green btn-small">Edit Profile</a>
+        </div>
+      </div>
+
+    - Create the props "user", "userPostsCount" and "userThreadsCount"
+
+    - Move the used classes from "AuthUserView"'s scoped style to its scoped style
+
+  * Create the "@/views/Users/views/AuthUserView/components/UserProfileCardEditor"
+
+    - Template
+      <div>
+        <div class="profile-card">
+
+          <p class="text-center">
+            <img :src="user.avatar" class="avatar-xlarge img-update">
+          </p>
+
+          <div class="form-group">
+            <input v-model="form.username" type="text" placeholder="Username" class="form-input text-lead text-bold">
+          </div>
+
+          <div class="form-group">
+            <input v-model="form.name" type="text" placeholder="Full name" class="form-input text-lead">
+          </div>
+
+          <div class="form-group">
+            <label for="user_bio">Bio</label>
+            <textarea v-model="form.bio" class="form-input" id="user_bio" placeholder="Write a few words about yourself." />
+          </div>
+
+          <div class="stats">
+            <span>{{ userPostsCount }} Posts</span>
+            <span>{{ userThreadsCount }} Threads</span>
+          </div>
+
+          <hr>
+
+          <div class="form-group">
+            <label class="form-label" for="user_website">Website</label>
+            <input v-model="form.website" autocomplete="off" class="form-input" id="user_website">
+          </div>
+
+          <div class="form-group">
+            <label for="user_location" class="form-label">Location</label>
+            <input v-model="form.location" autocomplete="off" class="form-input" id="user_location">
+          </div>
+
+          <div class="btn-group space-between">
+            <button class="btn-ghost">Cancel</button>
+            <button @click.prevent="save" type="submit" class="btn-blue">Save</button>
+          </div>
+
+        </div>
+
+        <p class="text-small text-faded text-center">Member since june 2003, last visited 4 hours ago</p>
+
+      </div>
+
+    - Create the props "user", "userPostsCount", "userThreadsCount"
+
+    - Create the "form" data attribute as a clone of the "user" prop
+
+    - Create the "save()" method
+      save() {
+        this.$store.dispatch('updateUser', { ...this.form })
+      },
+  
+  * Update the vuex store
+
+    - Create the "updateUser" action
+      updateUser(context, user) {
+        context.commit('setUser', user);
+      },
+
+    - Create the "setUser" mutations
+      setUser(state, user) {
+        Vue.set(state.users, user.id, user);
+      }

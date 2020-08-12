@@ -20,6 +20,12 @@
 <script>
 export default {
   name: 'PostEditor',
+  props: {
+    threadId: {
+      type: String,
+      required: true,
+    },
+  },
   data: function () {
     return {
       text: null,
@@ -29,7 +35,7 @@ export default {
     onSubmit() {
       this.$emit('submit', {
         text: this.text,
-        publishedAt: Math.floor(Date.now() / 1000),
+        threadId: this.threadId,
       });
       this.text = '';
     },

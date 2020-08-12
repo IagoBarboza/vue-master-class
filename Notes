@@ -1210,7 +1210,33 @@
         this.$router.push({ name: 'AuthUserView' });
       },
 
-# 
+# AUTH USER AS OWNER OF NEW CREATED POSTS
+
+  * Update the "@/components/PostEditor"
+
+    - Create the "threadId" property
+
+    - Update the "save" method
+      save () {
+        const post = {
+          text: this.text,
+          threadId: this.threadId
+        }
+        this.text = ''
+      }
+
+    * Update the store
+
+      - Update the "createPost" action
+      createPost({ commit, state }, post) {
+        const postId = 'greatPost' + Math.random();
+        post.publishedAt = Math.floor(Date.now() / 1000);
+        post.userId = state.authId;
+        commit('setPost', { postId, post });
+        commit('appendPostToThread', { threadId: post.threadId, postId });
+        commit('appendPostToUser', { userId: post.userId, postId });
+      },
+
 
 
   

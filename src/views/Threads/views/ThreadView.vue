@@ -2,7 +2,7 @@
   <div class="col-large push-top">
     <h1>{{ thread.title }}</h1>
     <PostsList :posts="posts" />
-    <PostEditor @submit="addPost" />
+    <PostEditor :threadId="threadId" @submit="addPost" />
   </div>
 </template>
 
@@ -29,14 +29,7 @@ export default {
   },
   methods: {
     addPost(post) {
-      this.$store.dispatch(
-        'createPost', 
-        { 
-          ...post,
-          threadId: this.threadId,
-          userId: 'ALXhxjwgY9PinwNGHpfai6OWyDu2'
-        }
-      );
+      this.$store.dispatch('createPost', post);
     },
   },
   components: {

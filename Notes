@@ -1139,9 +1139,9 @@
         Vue.set(state.users, user.id, user);
       }
 
-# SHARED COMPONENT ROUTES
+# VIEW OR EDIT THE AUTH USER
 
-  * Happens when two routes uses the same view component
+  * Shared component routes => When two routes uses the same view component
 
   * Create the "@/views/Users/views/AuthUser" component
 

@@ -37,7 +37,7 @@
       </div>
 
       <div class="btn-group space-between">
-        <button class="btn-ghost">Cancel</button>
+        <button @click="cancel" class="btn-ghost">Cancel</button>
         <button @click.prevent="save" type="submit" class="btn-blue">Save</button>
       </div>
 
@@ -73,6 +73,9 @@ export default {
   methods: {
     save() {
       this.$store.dispatch('updateUser', { ...this.form })
+    },
+    cancel() {
+      this.$router.push({ name: 'AuthUserView' });
     },
   },
 }

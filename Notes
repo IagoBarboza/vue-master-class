@@ -1138,3 +1138,82 @@
       setUser(state, user) {
         Vue.set(state.users, user.id, user);
       }
+
+# SHARED COMPONENT ROUTES
+
+  * Happens when two routes uses the same view component
+
+  * Create the "@/views/Users/views/AuthUser" component
+
+    - Template
+      <router-view />
+  
+  * Transform the "@/views/Users/views/AuthUserView" on the "@/views/Users/views/AuthUser/views/AuthUserViewEdit"
+
+    - Template
+      ...
+      <UserProfileCardEditor
+        v-if="edit"
+        :user="user"
+        :userPostsCount="userPostsCount"
+        :userThreadsCount="userThreadsCount"
+      />
+
+      <UserProfileCard
+        v-else
+        :user="user"
+        :userPostsCount="userPostsCount"
+        :userThreadsCount="userThreadsCount"
+      />
+      ...
+    
+    - Create the "edit" property
+
+  * Update the router
+      ...
+      {
+        path: 'auth',
+        component: () => import('@/views/Users/views/AuthUser'),
+        children: [
+          {
+            path: '',
+            name: 'AuthUserView',
+            component: () => import('@/views/Users/views/AuthUser/views/AuthUserViewEdit'),
+            props: { edit: false },
+          },
+          {
+            path: 'edit',
+            name: 'AuthUserEdit',
+            component: () => import('@/views/Users/views/AuthUser/views/AuthUserViewEdit'),
+            props: { edit: true },
+          }
+        ]
+      },
+      ...
+
+  * Update the "@/views/Users/views/AuthUser/views/AuthUserViewEdit/components/UserProfileCard"
+
+    - Template
+      ...
+        <router-link :to="{ name: 'AuthUserEdit' }" class="btn-green btn-small">Edit Profile</router-link>
+      ...
+
+  * Update the "@/views/Users/views/AuthUser/views/AuthUserViewEdit/components/UserProfileCardEditor"
+
+    - Template
+      ...
+      <button @click="cancel" class="btn-ghost">Cancel</button>
+      ...
+
+    - Create the "cancel" method
+      cancel() {
+        this.$router.push({ name: 'AuthUserView' });
+      },
+
+# 
+
+
+  
+
+  
+    

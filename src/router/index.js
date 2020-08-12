@@ -45,8 +45,21 @@ const routes = [
     children: [
       {
         path: 'auth',
-        name: 'AuthUserView',
-        component: () => import('@/views/Users/views/AuthUserView'),
+        component: () => import('@/views/Users/views/AuthUser'),
+        children: [
+          {
+            path: '',
+            name: 'AuthUserView',
+            component: () => import('@/views/Users/views/AuthUser/views/AuthUserViewEdit'),
+            props: { edit: false },
+          },
+          {
+            path: 'edit',
+            name: 'AuthUserEdit',
+            component: () => import('@/views/Users/views/AuthUser/views/AuthUserViewEdit'),
+            props: { edit: true },
+          }
+        ]
       },
     ],
   },

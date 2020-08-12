@@ -3,13 +3,15 @@
     
     <div class="col-3 push-top">
 
-      <!-- <UserProfileCard
+      <UserProfileCardEditor
+        v-if="edit"
         :user="user"
         :userPostsCount="userPostsCount"
         :userThreadsCount="userThreadsCount"
-      /> -->
+      />
 
-      <UserProfileCardEditor
+      <UserProfileCard
+        v-else
         :user="user"
         :userPostsCount="userPostsCount"
         :userThreadsCount="userThreadsCount"
@@ -45,6 +47,12 @@ import UserProfileCardEditor from './components/UserProfileCardEditor';
 
 export default {
   name: 'AuthUserView',
+  props: {
+    edit: {
+      type: Boolean,
+      required: true,
+    },
+  },
   computed: {
     ...mapGetters({
       'user': 'authUser',
